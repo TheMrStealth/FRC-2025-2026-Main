@@ -31,10 +31,6 @@ public class Drive extends SubsystemBase{
     private final DifferentialDriveKinematics diffKin;
     private DifferentialDriveOdometry diffOdom;
 
-    // private final MecanumDrive mec;
-    // private final MecanumDriveKinematics mecDK;
-    // private MecanumDriveOdometry mecOdom;
-
     public Drive() {
         motorL1 = new SparkMax(1, MotorType.kBrushless);
         motorR2 = new SparkMax(2, MotorType.kBrushless);
