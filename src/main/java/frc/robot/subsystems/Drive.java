@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Drive extends SubsystemBase{
     private final SparkMax motorLL1,motorRL2,motorLF3,motorRF4;
     private final RelativeEncoder LEncoder, REncoder;
+    private final Pigeon2 gyro;
 
     private final DifferentialDrive diff;
     private final DifferentialDriveKinematics diffKin;
@@ -64,10 +66,12 @@ public class Drive extends SubsystemBase{
         diff = new DifferentialDrive(motorLL1, motorRL2);
         diff.setSafetyEnabled(false);
 
-        diffKin = new DifferentialDriveKinematics(Units.inchesToMeters(0)); //need distance between left and right wheel of robot in inches
+        diffKin = new DifferentialDriveKinematics(Units.inchesToMeters(19.5));
 
         Pose2d start = new Pose2d(0,0,new Rotation2d(0));
         diffOdom = new DifferentialDriveOdometry(null, LEncoder.getPosition(), REncoder.getPosition(),start);
+
+        gyro = new Pigeon2(0);
     }
     public void robotCentricDrive(double x, double xr) {
         diff.arcadeDrive(x, xr);
@@ -82,6 +86,9 @@ public class Drive extends SubsystemBase{
     public double getH() {
         return diffOdom.getPoseMeters().getRotation().getDegrees();
     }
+    public double getHGyro() {
+        return gyro.getYaw().getValueAsDouble();
+    }
 
     @Override
     public void periodic() {
@@ -89,9 +96,10 @@ public class Drive extends SubsystemBase{
         double gearRatio = 8.46;
         double leftPos = (LEncoder.getPosition()/gearRatio) * wheelCircumference;
         double rightPos = (REncoder.getPosition()/gearRatio) * wheelCircumference;
-        diffOdom.update(null, leftPos, rightPos);
+        diffOdom.update(gyro.getRotation2d(), leftPos, rightPos);
         SmartDashboard.putNumber("XPos: ", getX());
         SmartDashboard.putNumber("YPos: ",getY());
         SmartDashboard.putNumber("Heading: ",getH());
+        SmartDashboard.putNumber("Heading Gyro: ",getHGyro());
     }
 }
