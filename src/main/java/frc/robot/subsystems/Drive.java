@@ -100,6 +100,6 @@ public class Drive extends SubsystemBase{
         SmartDashboard.putNumber("XPos: ", getX());
         SmartDashboard.putNumber("YPos: ",getY());
         SmartDashboard.putNumber("Heading: ",getH());
-        SmartDashboard.putNumber("Heading Gyro: ",getHGyro());
+        SmartDashboard.putNumber("Heading Gyro: ",getHGyro());  
     }
 }
