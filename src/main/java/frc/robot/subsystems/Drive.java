@@ -38,6 +38,7 @@ public class Drive extends SubsystemBase{
 
     public Drive() {
         PD = new PowerDistribution(63,ModuleType.kRev);
+        gyro = new Pigeon2(62);
 
         motorLL1 = new SparkMax(1, MotorType.kBrushless);
         motorLF3 = new SparkMax(3,MotorType.kBrushless);
@@ -74,9 +75,7 @@ public class Drive extends SubsystemBase{
         diffKin = new DifferentialDriveKinematics(Units.inchesToMeters(19.5));
 
         Pose2d start = new Pose2d(0,0,new Rotation2d(0));
-        diffOdom = new DifferentialDriveOdometry(null, LEncoder.getPosition(), REncoder.getPosition(),start);
-
-        gyro = new Pigeon2(0);
+        diffOdom = new DifferentialDriveOdometry(gyro.getRotation2d(), LEncoder.getPosition(), REncoder.getPosition(),start);
     }
     public void robotCentricDrive(double x, double xr) {
         diff.arcadeDrive(x, xr);
