@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter.AdvantageScopeOpenBehavior;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.util.DriveFeedforwards;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -14,8 +15,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
@@ -83,17 +86,46 @@ public class Drive extends SubsystemBase{
         diff.arcadeDrive(x, xr);
     }
 
+    public void drive(ChassisSpeeds speeds) {
+        DifferentialDriveWheelSpeeds wheelSpeeds = diffKin.toWheelSpeeds(speeds);
+        double leftOutput = wheelSpeeds.leftMetersPerSecond / 4.56;
+        double rightOutput = wheelSpeeds.rightMetersPerSecond / 4.56;
+        diff.tankDrive(leftOutput,rightOutput);
+    }
+    public void driveD(ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
+        drive(speeds);
+    }
     public double getX() {
         return diffOdom.getPoseMeters().getX();
     }
     public double getY() {
         return diffOdom.getPoseMeters().getY();
     }
-    public double getH() {
-        return diffOdom.getPoseMeters().getRotation().getDegrees();
+    public Rotation2d getH() {
+        return pige.getRotation2d();
+        // return Rotation2d.fromDegrees(-pige.getYaw().getValueAsDouble());
     }
-    public double getHGyro() {
-        return pige.getYaw().getValueAsDouble();
+    public Pose2d getPose() {
+        return diffOdom.getPoseMeters();
+    }
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        diffOdom.resetPosition(
+            getH(),
+            LEncoder.getPosition(),
+            REncoder.getPosition(),
+            pose
+        );
+    }
+    public ChassisSpeeds getChassisSpeeds() {
+        return diffKin.toChassisSpeeds(new DifferentialDriveWheelSpeeds(
+            LEncoder.getVelocity(),
+            REncoder.getVelocity()
+        ));
+    }
+    public void resetEncoders() {
+        LEncoder.setPosition(0);
+        REncoder.setPosition(0);
     }
 
     @Override
@@ -105,8 +137,7 @@ public class Drive extends SubsystemBase{
         diffOdom.update(pige.getRotation2d(), leftPos, rightPos);
         SmartDashboard.putNumber("XPos: ", getX());
         SmartDashboard.putNumber("YPos: ",getY());
-        SmartDashboard.putNumber("Heading: ",getH());
-        SmartDashboard.putNumber("Heading Gyro: ",getHGyro());  
+        SmartDashboard.putNumber("Heading: ",getH().getDegrees());
         SmartDashboard.putNumber("Voltage: ",PD.getVoltage());
         
     }
