@@ -22,26 +22,10 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
-  private Drive driveS;
-  private Intake intakeS;
-  private Launcher launcherS;
-  private Omnispike omnispikeS;
-  private Climb climbS;
-  private XboxController driver, operator;
-
   public Robot() {
     m_robotContainer = new RobotContainer();
     //Autos
     AutoBuilder.buildAuto("Auto Test 1");
-    //Subsystems
-    driveS = new Drive();
-    intakeS = new Intake();
-    launcherS = new Launcher();
-    omnispikeS = new Omnispike();
-    climbS = new Climb();
-    //Controllers
-    driver = new XboxController(0);
-    operator = new XboxController(1);
     CameraServer.startAutomaticCapture();
   }
 
@@ -69,7 +53,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    m_robotContainer.autoPeriodics();
+  }
 
   @Override
   public void autonomousExit() {}
@@ -83,7 +69,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    driveS.robotCentricDrive(-driver.getLeftY(), -driver.getRightX());
+    m_robotContainer.teleopPeriodics();
   }
 
   @Override

@@ -5,34 +5,54 @@
 package frc.robot;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Launcher;
+import frc.robot.subsystems.Omnispike;
 
 public class RobotContainer {
 
+  private PowerDistribution PD;
+
   private final Drive driveS;
+  private final Intake intakeS;
+  private final Launcher launcherS;
+  private final Omnispike omnispikeS;
+  private final Climb climbS;
+
+  private XboxController driver, operator;
+
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
+    PD = new PowerDistribution(63,ModuleType.kRev);
+
     driveS = new Drive();
+    intakeS = new Intake();
+    launcherS = new Launcher();
+    omnispikeS = new Omnispike();
+    climbS = new Climb();
+
+    driver = new XboxController(0);
+    operator = new XboxController(1);
+
     configureAutoBuilder();
     configureBindings();
 
@@ -68,6 +88,23 @@ public class RobotContainer {
   }
 
   private void configureBindings() {}
+
+  public void autoPeriodics() {
+    telemetry();
+  }
+
+  public void teleopPeriodics() {
+    telemetry();
+
+    driveS.robotCentricDrive(-driver.getLeftY(), -driver.getRightX());
+  }
+
+  public void telemetry() {
+    SmartDashboard.putNumber("XPos: ", driveS.getX());
+    SmartDashboard.putNumber("YPos: ",driveS.getY());
+    SmartDashboard.putNumber("Heading: ",driveS.getH().getDegrees());
+    SmartDashboard.putNumber("Voltage: ",PD.getVoltage());
+  }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
