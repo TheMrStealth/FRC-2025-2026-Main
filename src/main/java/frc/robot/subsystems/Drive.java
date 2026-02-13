@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import org.littletonrobotics.junction.wpilog.WPILOGWriter.AdvantageScopeOpenBehavior;
+// import org.littletonrobotics.junction.wpilog.WPILOGWriter.AdvantageScopeOpenBehavior;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.PersistMode;
@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drive extends SubsystemBase{
-    private final PowerDistribution PD;
     private final SparkMax motorLL1,motorRL2,motorLF3,motorRF4;
     private final RelativeEncoder LEncoder, REncoder;
     private final Pigeon2 pige;
@@ -37,11 +36,11 @@ public class Drive extends SubsystemBase{
     private final DifferentialDrive diff;
     private final DifferentialDriveKinematics diffKin;
     private DifferentialDriveOdometry diffOdom;
+    private final PowerDistribution PD;
 
     public Drive() {
-        PD = new PowerDistribution(63,ModuleType.kRev);
         pige = new Pigeon2(62);
-
+        PD = new PowerDistribution(63,ModuleType.kRev);
         motorLL1 = new SparkMax(1, MotorType.kBrushless);
         motorLF3 = new SparkMax(3,MotorType.kBrushless);
         motorRL2 = new SparkMax(2, MotorType.kBrushless);

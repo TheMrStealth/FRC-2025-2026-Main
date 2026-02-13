@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 public class RobotContainer {
+
+  //public final Drive driveS;
+  //private final SendableChooser<Command> autoChooser;
+
   public RobotContainer() {
     configureBindings();
   }
