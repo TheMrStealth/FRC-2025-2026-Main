@@ -5,9 +5,12 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-public class Intake {
+public class Intake extends SubsystemBase {
     private final SparkMax motorI5, motorV6;
 
     public Intake() {

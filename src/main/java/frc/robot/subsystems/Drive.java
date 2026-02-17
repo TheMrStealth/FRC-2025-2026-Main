@@ -23,7 +23,10 @@ import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
@@ -33,7 +36,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drive extends SubsystemBase{
     private final SparkMax motorLL1,motorRL2,motorLF3,motorRF4;
-    private final RelativeEncoder LEncoder, REncoder;
+    private final Encoder LEncoder, REncoder;
     private final Pigeon2 pige;
 
     private final DifferentialDrive diff;
@@ -66,11 +69,8 @@ public class Drive extends SubsystemBase{
         motorLF3.configure(configLF,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
         motorRF4.configure(configRF,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
         
-        LEncoder = motorLL1.getEncoder();
-        REncoder = motorRL2.getEncoder();
-
-        LEncoder.setPosition(0);
-        REncoder.setPosition(0);
+        LEncoder = new Encoder(2,3,false,EncodingType.k2X);
+        REncoder = new Encoder(0,1,true,EncodingType.k2X);
 
         diff = new DifferentialDrive(motorLL1, motorRL2);
         diff.setSafetyEnabled(false);
@@ -78,7 +78,7 @@ public class Drive extends SubsystemBase{
         diffKin = new DifferentialDriveKinematics(Units.inchesToMeters(19.5));
 
         Pose2d start = new Pose2d(0,0,new Rotation2d(0));
-        diffOdom = new DifferentialDriveOdometry(pige.getRotation2d(), LEncoder.getPosition(), REncoder.getPosition(),start);
+        diffOdom = new DifferentialDriveOdometry(pige.getRotation2d(), LEncoder.get(), REncoder.get(),start);
     }
     public void robotCentricDrive(double x, double xr) {
         diff.arcadeDrive(x, xr);
@@ -110,28 +110,37 @@ public class Drive extends SubsystemBase{
         resetEncoders();
         diffOdom.resetPosition(
             getH(),
-            LEncoder.getPosition(),
-            REncoder.getPosition(),
+            LEncoder.getDistance(),
+            REncoder.getDistance(),
             pose
         );
     }
     public ChassisSpeeds getChassisSpeeds() {
         return diffKin.toChassisSpeeds(new DifferentialDriveWheelSpeeds(
-            LEncoder.getVelocity(),
-            REncoder.getVelocity()
+            LEncoder.getRate(),
+            REncoder.getRate()
         ));
     }
     public void resetEncoders() {
-        LEncoder.setPosition(0);
-        REncoder.setPosition(0);
+        LEncoder.reset();
+        REncoder.reset();
+    }
+    public double getLeftMeters() {
+        return LEncoder.getDistance()*Units.inchesToMeters(6)*Math.PI;
+    }
+    public double getRightMeters() {
+        return REncoder.getDistance()*Units.inchesToMeters(6)*Math.PI;
     }
 
     @Override
     public void periodic() {
-        double wheelCircumference = Math.PI * Units.inchesToMeters(6);
-        double gearRatio = 8.46;
-        double leftPos = (LEncoder.getPosition()/gearRatio) * wheelCircumference;
-        double rightPos = (REncoder.getPosition()/gearRatio) * wheelCircumference;
-        diffOdom.update(pige.getRotation2d(), leftPos, rightPos);
+        diffOdom.update(pige.getRotation2d(), getLeftMeters(), getRightMeters());
+    }
+
+    public double getEncoderLeft() {
+        return LEncoder.getDistance();
+    }
+    public double getEncoderRight() {
+        return REncoder.getDistance();
     }
 }

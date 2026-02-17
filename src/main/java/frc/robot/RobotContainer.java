@@ -104,6 +104,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("YPos: ",driveS.getY());
     SmartDashboard.putNumber("Heading: ",driveS.getH().getDegrees());
     SmartDashboard.putNumber("Voltage: ",PD.getVoltage());
+    SmartDashboard.putNumber("Encoder Left: ", driveS.getEncoderLeft());
+    SmartDashboard.putNumber("Encoder Right: ", driveS.getEncoderRight());
   }
 
   public Command getAutonomousCommand() {
