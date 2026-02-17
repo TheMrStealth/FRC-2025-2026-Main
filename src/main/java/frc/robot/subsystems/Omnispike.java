@@ -5,9 +5,12 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-public class Omnispike {
+public class Omnispike extends SubsystemBase {
     private final SparkMax motorSP7, motorSP8;
 
     public Omnispike() {
