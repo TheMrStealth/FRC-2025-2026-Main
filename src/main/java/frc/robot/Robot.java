@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Climb;
@@ -32,6 +33,15 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    SmartDashboard.putBoolean("Front Tag Detected:", LimelightHelpers.getTV("limelight-front"));
+    SmartDashboard.putNumber("Front Tag ID:", LimelightHelpers.getFiducialID("limelight-front"));
+    SmartDashboard.putNumber("Front Tag X", LimelightHelpers.getTX("limelight-front"));
+    SmartDashboard.putNumber("Front Tag Y", LimelightHelpers.getTY("limelight-front"));
+    SmartDashboard.putBoolean("Back Tag Detected:", LimelightHelpers.getTV("limelight-back"));
+    SmartDashboard.putNumber("Back Tag ID:", LimelightHelpers.getFiducialID("limelight-back"));
+    SmartDashboard.putNumber("Back Tag X", LimelightHelpers.getTX("limelight-back"));
+    SmartDashboard.putNumber("Back Tag Y", LimelightHelpers.getTY("limelight-back"));
+    SmartDashboard.updateValues();
   }
 
   @Override
