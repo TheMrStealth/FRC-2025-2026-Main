@@ -33,10 +33,8 @@ public class Launcher extends SubsystemBase {
 
     public void enable() {
         motorL9.set(0.8);
-        motorL10.set(0.8);
     }
     public void disable() {
         motorL9.stopMotor();
-        motorL10.stopMotor();
     }
 }

@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 
 public class Drive extends SubsystemBase{
     private final SparkMax motorLL1,motorRL2,motorLF3,motorRF4;
@@ -42,6 +43,8 @@ public class Drive extends SubsystemBase{
     private final DifferentialDrive diff;
     private final DifferentialDriveKinematics diffKin;
     private DifferentialDriveOdometry diffOdom;
+
+    private Pose2d position;
 
     public Drive() {
         pige = new Pigeon2(62);
@@ -144,5 +147,13 @@ public class Drive extends SubsystemBase{
     }
     public double getEncoderRight() {
         return REncoder.getDistance();
+    }
+    public void updatePositionFromLimelight() {
+        if (LimelightHelpers.getTV("limelight-front")) {
+            position = LimelightHelpers.getBotPose2d("limelight-front");
+            SmartDashboard.putNumber("XPosLime: ", position.getX());
+            SmartDashboard.putNumber("YPosLime: ", position.getY());
+            SmartDashboard.putNumber("HeadingLime: ", position.getRotation().getDegrees());
+        }
     }
 }
