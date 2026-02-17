@@ -97,6 +97,7 @@ public class RobotContainer {
     telemetry();
 
     driveS.robotCentricDrive(-driver.getLeftY(), -driver.getRightX());
+    // driveS.robotCentricTank(-driver.getLeftY(), -driver.getRightY());
   }
 
   public void telemetry() {
@@ -106,6 +107,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("Voltage: ",PD.getVoltage());
     SmartDashboard.putNumber("Encoder Left: ", driveS.getEncoderLeft());
     SmartDashboard.putNumber("Encoder Right: ", driveS.getEncoderRight());
+    SmartDashboard.putNumber("Left Y: ", -driver.getLeftY());
+    SmartDashboard.putNumber("Right Y: ", -driver.getRightY());
   }
 
   public Command getAutonomousCommand() {

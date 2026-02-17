@@ -2,7 +2,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -24,6 +27,8 @@ public class Launcher extends SubsystemBase {
         
         motorL9.setNeutralMode(NeutralModeValue.Brake);
         motorL10.setNeutralMode(NeutralModeValue.Brake);
+
+        motorL10.setControl(new Follower(motorL9.getDeviceID(), MotorAlignmentValue.Aligned));
     }
 
     public void enable() {
