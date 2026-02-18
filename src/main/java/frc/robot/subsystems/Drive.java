@@ -89,6 +89,9 @@ public class Drive extends SubsystemBase{
     public void robotCentricTank(double x1, double x2) {
         diff.tankDrive(x1,x2);
     }
+    public void rocketLeague(double s, double t) {
+        diff.curvatureDrive(s, t, false);
+    }
     public void drive(ChassisSpeeds speeds) {
         DifferentialDriveWheelSpeeds wheelSpeeds = diffKin.toWheelSpeeds(speeds);
         double leftOutput = wheelSpeeds.leftMetersPerSecond / 4.56;

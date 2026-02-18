@@ -41,6 +41,8 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
 
+  private double triggerSpeed, leftY, rightY;
+
   public RobotContainer() {
     PD = new PowerDistribution(63,ModuleType.kRev);
 
@@ -96,8 +98,13 @@ public class RobotContainer {
   public void teleopPeriodics() {
     telemetry();
 
-    driveS.robotCentricDrive(-driver.getLeftY(), -driver.getRightX());
-    // driveS.robotCentricTank(-driver.getLeftY(), -driver.getRightY());
+    triggerSpeed = driver.getRightTriggerAxis() - driver.getLeftTriggerAxis();
+    leftY = -driver.getLeftY();
+    rightY = -driver.getRightY();
+
+    // driveS.robotCentricDrive(leftY, rightY);
+    // driveS.robotCentricTank(leftY, rightY);
+    driveS.rocketLeague(triggerSpeed, leftY);
   }
 
   public void telemetry() {
@@ -107,8 +114,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("Voltage: ",PD.getVoltage());
     SmartDashboard.putNumber("Encoder Left: ", driveS.getEncoderLeft());
     SmartDashboard.putNumber("Encoder Right: ", driveS.getEncoderRight());
-    SmartDashboard.putNumber("Left Y: ", -driver.getLeftY());
-    SmartDashboard.putNumber("Right Y: ", -driver.getRightY());
+    SmartDashboard.putNumber("Left Y: ", leftY);
+    SmartDashboard.putNumber("Right Y: ", rightY);
+    SmartDashboard.putNumber("Trigger Speed", triggerSpeed);
   }
 
   public Command getAutonomousCommand() {
