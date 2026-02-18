@@ -151,9 +151,11 @@ public class Drive extends SubsystemBase{
     public void updatePositionFromLimelight() {
         if (LimelightHelpers.getTV("limelight-front")) {
             position = LimelightHelpers.getBotPose2d("limelight-front");
-            SmartDashboard.putNumber("XPosLime: ", position.getX());
-            SmartDashboard.putNumber("YPosLime: ", position.getY());
-            SmartDashboard.putNumber("HeadingLime: ", position.getRotation().getDegrees());
+        } else if (LimelightHelpers.getTV("limelight-back")) {
+            position = LimelightHelpers.getBotPose2d("limelight-back");
         }
+        SmartDashboard.putNumber("XPosLime: ", position.getX());
+        SmartDashboard.putNumber("YPosLime: ", position.getY());
+        SmartDashboard.putNumber("HeadingLime: ", position.getRotation().getDegrees());
     }
 }
