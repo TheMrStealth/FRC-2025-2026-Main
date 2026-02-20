@@ -139,10 +139,12 @@ public class Drive extends SubsystemBase{
         REncoder.reset();
     }
     public double getLeftMeters() {
-        return (LEncoder.getDistance()+20.80432)/2074.98994;
+        double L = LEncoder.getDistance();
+        return (-2056.32 + Math.sqrt(4228451 + 13.577 * (L + 8.307))) / 6.7883;
     }
     public double getRightMeters() {
-        return (REncoder.getDistance()+24.88942)/2079.32581;
+        double R = REncoder.getDistance();
+        return (-2054.06 + Math.sqrt(4219164 + 18.372 * (R + 7.978))) / 9.1862;
     }
 
     @Override
