@@ -65,8 +65,13 @@
       configureAutoBuilder();
       configureBindings();
 
-      autoChooser = AutoBuilder.buildAutoChooser();
-      SmartDashboard.putData("Auto Chooser: ", autoChooser);
+      if (AutoBuilder.isConfigured()) {
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser: ", autoChooser);
+      } else {
+        autoChooser = new SendableChooser<>();
+        DriverStation.reportError("AutoBuilder not configured!", false);
+      }
 
       driveChooser = new SendableChooser<>();
       driveChooser.setDefaultOption("Regular (Arcade) Drive", 0);
@@ -81,12 +86,13 @@
         robotConfig = RobotConfig.fromGUISettings();
       } catch (IOException | ParseException e) {
         e.printStackTrace();
+        DriverStation.reportError("Failed to load robot config: " + e.getMessage(), false);
         return;
       }
-      PPLTVController ltvController = new PPLTVController(2.0);
+      PPLTVController ltvController = new PPLTVController(0.02);
       
       BooleanSupplier shouldFlipPath = () -> {
-        var alliance = DriverStation.getAlliance().orElse(Alliance.Red);
+        var alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
         return alliance == Alliance.Red;
       };
 
@@ -146,12 +152,8 @@
       SmartDashboard.putNumber("Left Y: ", leftY);
       SmartDashboard.putNumber("Right Y: ", rightY);
       SmartDashboard.putNumber("Trigger Speed", triggerSpeed);
-      SmartDashboard.updateValues();
-      lowBattery.set(PD.getTotalEnergy() < 777600*0.6);
-      replaceBattery.set(PD.getTotalEnergy() < 777600*0.4);
-      // if(PD.getTotalEnergy()<777600*0.6){
-      //   SmartDashboard.putString(null, "replace battery");
-      // }
+      lowBattery.set(PD.getVoltage()<12.0);
+      replaceBattery.set(PD.getVoltage() < 11.8);
     }
 
     public Command getAutonomousCommand() {
