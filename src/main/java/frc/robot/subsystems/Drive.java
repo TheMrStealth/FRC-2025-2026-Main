@@ -75,6 +75,11 @@ public class Drive extends SubsystemBase{
         LEncoder = new Encoder(2,3,false,EncodingType.k2X);
         REncoder = new Encoder(0,1,true,EncodingType.k2X);
 
+        LEncoder.setReverseDirection(true);
+        REncoder.setReverseDirection(false);
+
+        resetEncoders();
+
         diff = new DifferentialDrive(motorLL1, motorRL2);
         diff.setSafetyEnabled(false);
 
@@ -134,10 +139,10 @@ public class Drive extends SubsystemBase{
         REncoder.reset();
     }
     public double getLeftMeters() {
-        return LEncoder.getDistance()*Units.inchesToMeters(6)*Math.PI;
+        return (LEncoder.getDistance()+20.80432)/2074.98994;
     }
     public double getRightMeters() {
-        return REncoder.getDistance()*Units.inchesToMeters(6)*Math.PI;
+        return (REncoder.getDistance()+24.88942)/2079.32581;
     }
 
     @Override
